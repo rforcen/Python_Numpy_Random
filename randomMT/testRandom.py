@@ -1,6 +1,7 @@
 import numpy
 from RandomMT import RandomMT as rmt
 from timeit import default_timer as timer
+from cmath import sqrt
 
 def compRandom():
     print('random timing test...')
@@ -34,6 +35,11 @@ def compRandom():
     rndArr = rmt.rand(size, 'u4')
     print('check rand-u4,', numpy.all(rndArr >= 0) and numpy.all(rndArr <= 2 ** 32 - 1))
     rndArr = rmt.rand(size, 'u8')
-    print('check rand-u8,', numpy.all(rndArr >= 0) and numpy.all(rndArr <= 2**64-1))
+    print('check rand-u8,', numpy.all(rndArr >= 0) and numpy.all(rndArr <= 2 ** 64 - 1))
+
+    rndArr = rmt.rand(size, 'c4')
+    print('check rand-c4,', numpy.all(numpy.abs(rndArr) >= 0) and numpy.all(numpy.abs(rndArr) <= sqrt(2)))
+    rndArr = rmt.rand(size, 'c8')
+    print('check rand-c8,', numpy.all(numpy.abs(rndArr) >= 0) and numpy.all(numpy.abs(rndArr) <= sqrt(2)))
 
 compRandom()
