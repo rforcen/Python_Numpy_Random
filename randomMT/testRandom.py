@@ -1,45 +1,41 @@
+'''
+test RandomMT with type check and timing performance
+'''
 import numpy
 from RandomMT import RandomMT as rmt
 from timeit import default_timer as timer
-from cmath import sqrt
+
 
 def compRandom():
-    print('random timing test...')
-    size = 1024 * 1024 * 32
-    tn = timer()
-    rndArr = numpy.random.random(size)
-    tn = timer() - tn
-    print('time numpy for ', size, 'values', tn)
+    def testTypes():
+        def check(type, range):
+            rndArr = rmt.rand(size, type)
+            print('check rand -', type, '->',
+                  'ok' if numpy.all(rndArr >= range[0]) and numpy.all(rndArr <= range[1]) else 'fail')
 
-    tr = timer()
-    rndArr = rmt.rand(size, 'f8')
-    tr = timer() - tr
-    print('time RandomMT for ', size, 'values', tr, 'ratio numpy/mt:', tn/tr)
+        for c in [['f8', [0, 1]], ['f4', [0, 1]], ['i1', [0, 2 ** 7 - 1]], ['i2', [0, 2 ** 15 - 1]],
+                  ['u1', [0, 2 ** 8 - 1]], ['u2', [0, 2 ** 16 - 1]], ['i4', [0, 2 ** 31 - 1]], ['i8', [0, 2 ** 64 - 1]],
+                  ['u4', [0, 2 ** 32 - 1]], ['u8', [0, 2 ** 64 - 1]],
+                  ['c4', [0, complex(1, 1)]], ['c8', [0, complex(1, 1)]]]:
+            check(c[0], c[1])
 
-    rndArr = rmt.rand(size, 'f8')
-    print('check rand-f8,', numpy.all(rndArr >= 0) and numpy.all(rndArr <= 1))
-    rndArr = rmt.rand(size, 'f4')
-    print('check rand-f4,', numpy.all(rndArr >= 0) and numpy.all(rndArr <= 1))
-    rndArr = rmt.rand(size, 'i1')
-    print('check rand-i1,', numpy.all(rndArr >= 0) and numpy.all(rndArr <= 2 ** 7 - 1))
-    rndArr = rmt.rand(size, 'i2')
-    print('check rand-i2,', numpy.all(rndArr >= 0) and numpy.all(rndArr <= 2 ** 15 - 1))
-    rndArr = rmt.rand(size, 'u1')
-    print('check rand-u1,', numpy.all(rndArr >= 0) and numpy.all(rndArr <= 2 ** 8 - 1))
-    rndArr = rmt.rand(size, 'u2')
-    print('check rand-u2,', numpy.all(rndArr >= 0) and numpy.all(rndArr <= 2 ** 16 - 1))
-    rndArr = rmt.rand(size, 'i4')
-    print('check rand-i4,', numpy.all(rndArr >= 0) and numpy.all(rndArr <= 2 ** 31 - 1))
-    rndArr = rmt.rand(size, 'i8')
-    print('check rand-i8,', numpy.all(rndArr >= 0) and numpy.all(rndArr <= 2**64-1))
-    rndArr = rmt.rand(size, 'u4')
-    print('check rand-u4,', numpy.all(rndArr >= 0) and numpy.all(rndArr <= 2 ** 32 - 1))
-    rndArr = rmt.rand(size, 'u8')
-    print('check rand-u8,', numpy.all(rndArr >= 0) and numpy.all(rndArr <= 2 ** 64 - 1))
+    def testTiming():
+        print('random timing test...')
 
-    rndArr = rmt.rand(size, 'c4')
-    print('check rand-c4,', numpy.all(numpy.abs(rndArr) >= 0) and numpy.all(numpy.abs(rndArr) <= sqrt(2)))
-    rndArr = rmt.rand(size, 'c8')
-    print('check rand-c8,', numpy.all(numpy.abs(rndArr) >= 0) and numpy.all(numpy.abs(rndArr) <= sqrt(2)))
+        tn = timer()
+        rndArr = numpy.random.random(size)
+        tn = timer() - tn
+        print('time numpy for ', size, 'values', tn)
+
+        tr = timer()
+        rndArr = rmt.rand(size, 'f8')
+        tr = timer() - tr
+        print('time RandomMT for ', size, 'values', tr, 'ratio numpy/mt:', tn / tr)
+
+    size = 50000000
+
+    testTiming()
+    testTypes();
+
 
 compRandom()
