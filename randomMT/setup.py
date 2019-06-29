@@ -14,4 +14,4 @@ setup(
     version='0.1',
     ext_modules=[RandomMT])
 
-# call with: python3.7 compile.py build_ext --inplace
+# call with: python3.7 setup.py build_ext --inplace
