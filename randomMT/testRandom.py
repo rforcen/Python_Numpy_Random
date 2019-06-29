@@ -35,7 +35,7 @@ def compRandom():
     size = 50000000
 
     testTiming()
-    testTypes();
+    testTypes()
 
 
 compRandom()
